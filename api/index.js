@@ -8,5 +8,5 @@ app.use("/auth", require("./routes/auth"));
 app.use("/posts", require("./routes/posts"));
 
 app.listen(8000, () => {
-  console.log("Listening on port 5000");
+  console.log("Listening on port 8000");
 });
