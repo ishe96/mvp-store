@@ -14,7 +14,7 @@ const NewProduct = () => {
     const [productPrice, setProductPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
-    const handleSignup = async (e) => {
+    const handlePost = async (e) => {
         e.preventDefault();
         try {
             await PostService.postPublicPosts(
@@ -24,15 +24,7 @@ const NewProduct = () => {
                 quantity
             ).then(
                 (response) => {
-                    // check for token and user already exists with 200
-                    //   console.log("Sign up successfully", response);
-                    if (productPrice === 5 || 10 || 20 || 50 || 100) {
-                        return;
-                    } else {
-                        alert(
-                            "Denominations should be values of : 5 || 10 || 20 || 50 || 100"
-                        );
-                    }
+                    console.log(response);
                 },
                 (error) => {
                     console.log(error);
@@ -45,7 +37,7 @@ const NewProduct = () => {
 
     return (
         <div>
-            <form onSubmit={handleSignup}>
+            <form onSubmit={handlePost}>
                 <h3>Add New</h3>
                 <input
                     type="text"
@@ -150,7 +142,7 @@ const Seller = () => {
                             value={post.quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                         /> */}
-                        {/* {post.quantity} */}
+                        {post.quantity}
                         <button onClick={() => handleUpdate}>Update</button>
                         <button
                             style={{ backgroundColor: "red" }}

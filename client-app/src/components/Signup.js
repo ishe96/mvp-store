@@ -11,10 +11,19 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
+        
+        var new_user = {
+            id: `${username}_1`,
+            name: username,
+            password: password,
+            role: role,
+            deposit: [],
+        };
+        
         try {
             await AuthService.signup(username, password, role).then(
                 (response) => {
-                    // check for token and user already exists with 200
+                    // check if user already exists with 200
                     //   console.log("Sign up successfully", response);
                     if (role === "buyer") {
                         navigate("/home");
@@ -31,19 +40,6 @@ const Signup = () => {
         } catch (err) {
             console.log(err);
         }
-
-        var new_user = {
-            id: `${username}_1`,
-            name: username,
-            password: password,
-            role: role,
-            deposit: [],
-        };
-
-
-        // if (localStorage.getItem("user") == null) {
-        //         localStorage.setItem("user", "[]");
-        // }
 
         localStorage.setItem("user", JSON.stringify([new_user]));
     };

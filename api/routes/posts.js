@@ -5,7 +5,6 @@ const {
     deposits,
     buyingPost,
 } = require("../database");
-// const authToken = require("../middleware/authenticateToken");
 
 router.post("/products", async (req, res) => {
     const { id, productName, productPrice, quantity } = req.body;

@@ -35,7 +35,13 @@ const deposits = [
     },
 ];
 
-const buyingPost = [];
+const buyingCart = [
+    {
+        id: "item1",
+        productName: "item 1",
+        productPrice: 25
+    }
+];
 
 const privatePosts = [
     {

@@ -4,7 +4,6 @@ import AuthService from "./services/auth.service";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
-import Private from "./components/Private";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Seller from "./components/Seller";
 
@@ -32,14 +31,6 @@ function App() {
                             Home
                         </Link>
                     </li>
-
-                    {/* {currentUser && (
-                        <li className="nav-item">
-                            <Link to={"/private"} className="nav-link">
-                                Private
-                            </Link>
-                        </li>
-                    )} */}
                 </div>
 
                 {currentUser ? (
@@ -75,7 +66,6 @@ function App() {
                 <Routes>
                     <Route path="/home" element={<Home />} />
                     <Route path="/seller" element={<Seller />} />
-                    <Route path="/private" element={<Private />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                 </Routes>
