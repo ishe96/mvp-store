@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const { check, validationResult } = require("express-validator");
 const { users } = require("../database");
+const JWT = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 require("dotenv").config();
 
@@ -8,10 +10,10 @@ require("dotenv").config();
 router.post(
     "/signup",
     [
-        check("username", "Invalid username").isString(),
+        check("username", "Invalid username").isEmail(),
         check("password", "Password must be at least 6 chars long").isLength({
             min: 6,
-        })
+        }),
     ],
     async (req, res) => {
         const { username, password, role } = req.body;
@@ -42,6 +44,21 @@ router.post(
                 ],
             });
         }
+
+        // Hash password before saving to database
+        const salt = await bcrypt.genSalt(10);
+        console.log("salt:", salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        console.log("hashed password:", hashedPassword);
+
+        // Do not include sensitive information in JWT
+        const accessToken = await JWT.sign(
+            { username },
+            process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: "10m",
+            }
+        );
 
         // Save username and password to database/array
         users.push({
@@ -84,7 +101,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Compare hased password with user password to see if they are valid
-    let isMatch = user.password;
+    let isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
         return res.status(401).json({
@@ -94,21 +111,42 @@ router.post("/login", async (req, res) => {
                 },
             ],
         });
-    } else {
-        return res.status(200).json({
-            success: [
-                {
-                    msg: "user is valid",
-                },
-            ],
-        });
     }
 
+    // Send JWT access token
+    const accessToken = await JWT.sign(
+        { username },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: "10m",
+        }
+    );
+
+    // Refresh token
+    const refreshToken = await JWT.sign(
+        { username },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: "5m",
+        }
+    );
+
+    // Set refersh token in refreshTokens array
+    refreshToken.push(refreshToken);
+
     res.json({
-        username,
-        password,
-        // refreshToken,
+        accessToken,
+        refreshToken,
     });
 });
+
+// Deauthenticate - log out
+// Delete refresh token
+router.delete("/logout", (req, res) => {
+    const refreshToken = req.header("x-auth-token");
+
+    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+    res.sendStatus(204);
+})
 
 module.exports = router;
